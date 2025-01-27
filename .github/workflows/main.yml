@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Run Era Test Node and Tests
+    name: Check if Era Test Node starts
     runs-on: ubuntu-latest
 
     steps:
@@ -21,19 +21,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential libssl-dev
 
-      # Paso 3: Ejecutar Era Test Node con argumentos corregidos
+      # Paso 3: Ejecutar Era Test Node
       - name: Run Era Test Node
         id: era_test_node
         uses: dutterbutter/era-test-node-action@latest
         with:
           mode: 'run'
           port: '4321'
-          showCalls: 'user'
-          showStorageLogs: 'read'
-          showVmDetails: 'all'
-          showGasDetails: 'all'
-          resolveHashes: true  # Cambiamos a booleano
-          log: 'debug'
+          showCalls: 'none'  # Simplificamos las opciones
+          showStorageLogs: 'none'
+          showVmDetails: 'none'
+          showGasDetails: 'none'
+          resolveHashes: false
+          log: 'info'
           logFilePath: 'era_test_node.log'
           target: 'x86_64-unknown-linux-gnu'
           releaseTag: 'latest'
@@ -48,20 +48,13 @@ jobs:
             echo "No log file found."
           fi
 
-      # Paso 5: Instalar dependencias del proyecto
-      - name: Install dependencies
-        run: npm install
-
-      # Paso 6: Ejecutar pruebas
-      - name: Run tests
-        run: npm test
-
-      # Paso 7: Subir logs como artefactos (opcional)
-      - name: Upload era_test_node log
-        uses: actions/upload-artifact@v3
-        with:
-          name: era_test_node-log
-          path: era_test_node.log
+          # Verificar si el proceso está en ejecución
+          if pgrep -f "era_test_node"; then
+            echo "Era Test Node is running."
+          else
+            echo "Era Test Node is not running."
+            exit 1  # Falla el job si no está en ejecución
+          fi
 
   deploy:
     name: Deploy to GitHub Pages

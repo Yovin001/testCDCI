@@ -21,19 +21,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential libssl-dev
 
-      # Paso 3: Ejecutar Era Test Node con el puerto 4321
+      # Paso 3: Ejecutar Era Test Node con argumentos corregidos
       - name: Run Era Test Node
         id: era_test_node
         uses: dutterbutter/era-test-node-action@latest
         with:
           mode: 'run'
-          port: '4321'  # Usamos el puerto 4321
+          port: '4321'
           showCalls: 'user'
           showStorageLogs: 'read'
           showVmDetails: 'all'
           showGasDetails: 'all'
-          resolveHashes: 'true'
-          log: 'debug'  # Cambiamos a 'debug' para más detalles
+          resolveHashes: true  # Cambiamos a booleano
+          log: 'debug'
           logFilePath: 'era_test_node.log'
           target: 'x86_64-unknown-linux-gnu'
           releaseTag: 'latest'
